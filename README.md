@@ -18,8 +18,11 @@ in the following ways:
 ## Installation on MacOS or Linux
 
   `cd ~`
+  <br>
   `git clone https://github.com/gfaden/quadrupod`
+  <br>
   `cd quadrupod`
+  <br>
 
   or select the green Download button on this website
   and unzip the contents. Move or rename the download
