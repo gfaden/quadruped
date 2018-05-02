@@ -76,7 +76,7 @@ Modify conf.keys file:
 
   line 3:  type sftp
 
-  line 4:  path sftp://<IP address of your computer>//<path to quadrupod directory>
+  line 4:  path sftp:\/\/\<IP address of your computer\>\/\/\<path to quadrupod directory\>
 
   line 5:  user <username>
 
@@ -122,7 +122,7 @@ Use the yellow buttons for roaming.
 ## Author
 
    Glenn Faden
-   
+
    gtfaden@gmail.com
 
 ## License
