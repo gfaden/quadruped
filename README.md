@@ -123,17 +123,11 @@ Use two fingers to move, rotate or zoom the view.
 
 Use the yellow buttons for roaming.
 
-## Author
-
-   Glenn Faden
-
-   gtfaden@gmail.com
-
 ## License
 
 (The MIT License)
 
-Copyright (c) 2014 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
+Copyright (c) 2018 Glenn Faden &lt;gtfaden@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
