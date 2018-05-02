@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html style='width:100%; height:100%; border:0; margin:0; padding:0;'>
 
-<body style='background: linear-gradient(Grey 0%, White 100%);'>
+<body style='height: 100%; background: linear-gradient(Grey 0%, White 100%);'>
 
     <script src="/jquery/dist/jquery.min.js"></script>
     <script src="/x3dom/x3dom.js"></script>
@@ -255,9 +255,6 @@
             var translationValue = document.getElementById('XtranslationHandleTransform').getFieldValue('translation');
 
             // reset all the  elements
-            mode = 'Move';
-            var myAudio = document.getElementById("audio" + mode);
-            myAudio.play();
             translationValue.x = xoffset = 0;
             translationValue.y = yoffset = 0;;
             translationValue.z = zoffset = 0;;
