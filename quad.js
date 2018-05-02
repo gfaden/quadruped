@@ -1,26 +1,27 @@
 /*
  *		 Freednove Quadrupod Remote Control
  *
- * Brief:	This application controls the Freenove Qaudrupod Robot
- *		via WiFi. The User Interface is based on x3dom:
- *		https://www.x3dom.org, and extends the Interactive 3D 
- *		Transformations example in the tutorials.
- *              The UI is accessed via the URL http://localhost:4200.
+ * Brief:	This application controls the Freenove Qaudrupod Robot.
+ *          http://www.freenove.com
+ *		    The User Interface is based on x3dom:
+ *		    https://www.x3dom.org, and extends the Interactive 3D 
+ *		    Transformations example in the tutorials.
+ *          The UI is accessed via the URL http://localhost:4200.
  *
- *		After connecting to the robot's WiFi SSID, "Freenove
- *		Quadrupod Robot", the application may be started
- *		on MacOS or Linux via:
+ *		    After connecting to the robot's WiFi SSID, "Freenove
+ *		    Quadrupod Robot", the application may be started
+ *		    on MacOS or Linux via:
  *
  *			% node quad.js
  *
- *              After installation, the application can also be run
- *              on iOS by importing the parent directory into Touch Code Pro:
- *		https://itunes.apple.com/us/app/touch-code-pro/id989524904?mt=8
+ *          After installation, the application can also be run
+ *          on iOS by importing the parent directory into Touch Code Pro:
+ *		    https://itunes.apple.com/us/app/touch-code-pro/id989524904?mt=8
  *
- *              See README.md for more information.
+ *          See README.md for more information.
  *
  * Author:	Glenn Faden
- * Date:	05/01/2018
+ * Date:	05/02/2018
  * Copyright:   Glenn Faden
  * License:	MIT
  */
