@@ -1,5 +1,5 @@
 
-# Freenove Quadrupod Robot Remote Control
+# Freenove quadruped Robot Remote Control
 
 This application controls the Freenove Qaudrupod Robot.
 http://www.freenove.com
@@ -24,14 +24,14 @@ in the following ways:
 
   `cd ~`
   <br>
-  `git clone https://github.com/gfaden/quadrupod`
+  `git clone https://github.com/gfaden/quadruped`
   <br>
-  `cd quadrupod`
+  `cd quadruped`
   <br>
 
   or select the green Download button on this website
   and unzip the contents. Move or rename the download
-  directory from quadrupod-local to ~/quadrupod.
+  directory from quadruped-local to ~/quadruped.
 
   `npm install express`
   <br>
@@ -43,8 +43,8 @@ in the following ways:
 
 ## Running on MacOS or Linux
 
-Power on the quadrupod robot and join the WiFI SSID:
-  `Freenove Quadrupod Robot`
+Power on the quadruped robot and join the WiFI SSID:
+  `Freenove quadruped Robot`
 
 Run the following to start the Web Server:
 
@@ -69,19 +69,19 @@ on iOS. First get `Touch Code Pro` from App Store.
 
 https://itunes.apple.com/us/app/touch-code-pro/id989524904?mt=8
 
-Then the quadrupod directory must be copied to the iOS device.
+Then the quadruped directory must be copied to the iOS device.
 
 In left-hand panel click `+`
 
 Select `Add FTP/SFTP/SVN`
 
-Enter local directory name (.e.g. quadrupod)
+Enter local directory name (.e.g. quadruped)
 
 Modify thr `conf.keys` file:
 
   line 3:  type sftp
 
-  line 4:  path sftp:\/\/\<IP address of your computer\>\/\/\<path to quadrupod directory\>
+  line 4:  path sftp:\/\/\<IP address of your computer\>\/\/\<path to quadruped directory\>
 
   line 5:  user <username>
 
@@ -97,7 +97,7 @@ Tap on the directory name to verify its contents.
 ## Running on iPad or iPhone
 
 Power on the robot, then switch to the iOS `Settings` app and join the WiFI SSID:
-  `Freenove Quadrupod Robot`
+  `Freenove quadruped Robot`
 
 Switch back to `Touch Code Pro`
 

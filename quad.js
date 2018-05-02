@@ -1,5 +1,5 @@
 /*
- *		 Freednove Quadrupod Remote Control
+ *		 Freednove quadruped Remote Control
  *
  * Brief:	This application controls the Freenove Qaudrupod Robot.
  *          http://www.freenove.com
@@ -9,7 +9,7 @@
  *          The UI is accessed via the URL http://localhost:4200.
  *
  *		    After connecting to the robot's WiFi SSID, "Freenove
- *		    Quadrupod Robot", the application may be started
+ *		    quadruped Robot", the application may be started
  *		    on MacOS or Linux via:
  *
  *			% node quad.js

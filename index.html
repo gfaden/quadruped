@@ -194,7 +194,7 @@
                                 </shape>\
                                 </transform>');
 
-                $('#quadrupodRotation').append(gobj);
+                $('#quadrupedRotation').append(gobj);
             }
         }
 
@@ -266,7 +266,7 @@
             document.getElementById('ZtranslationHandleTransform').setFieldValue('translation', translationValue);
 
             document.getElementById('rotationHandleTransform').setFieldValue('translation', translationValue);
-            document.getElementById('quadrupodTranslation').setFieldValue('translation', translationValue);
+            document.getElementById('quadrupedTranslation').setFieldValue('translation', translationValue);
             currentGizmoRotation = new x3dom.fields.SFMatrix4f();
             currentGizmoRotationOffset = new x3dom.fields.SFMatrix4f();
             applyRotationGizmoTransformations("");
@@ -305,7 +305,7 @@
             if (applyRotationGizmoTransformations("")) {
                 socket.emit(command, slider);
                 document.getElementById('rotationHandleTransform').setFieldValue('translation', translationValue);
-                document.getElementById('quadrupodTranslation').setFieldValue('translation', translationValue);
+                document.getElementById('quadrupedTranslation').setFieldValue('translation', translationValue);
                 return (true);
             } else {
                 return (false);
@@ -473,8 +473,8 @@
                 //incorporate the current rotation offset, interpreted globally, into the stored rotation value
                 //set matrix value in column major format, as required by the MatrixTransform node
                 transformMatrix = tm;
-                var quadrupodRotationNode = document.getElementById('quadrupodRotation');
-                quadrupodRotationNode.setFieldValue("matrix", transformMatrix.transpose());
+                var quadrupedRotationNode = document.getElementById('quadrupedRotation');
+                quadrupedRotationNode.setFieldValue("matrix", transformMatrix.transpose());
                 return (true);
             } catch (ex) {
                 //console.log(ex);
@@ -490,7 +490,7 @@
                 font-size: 3em;
             }
         </style>
-        <h1>Freenove Quadrupod Robot</h1>
+        <h1>Freenove quadruped Robot</h1>
 
         <div>
             <button id='activate' value='Activate'>Activate</button>
@@ -533,9 +533,9 @@
             <navigationInfo type='examine'></navigationInfo>
             <viewpoint position="13.71854 12.00018 18.01263" orientation="-0.66475 0.73173 0.15059 0.81072"></viewpoint>
 
-            <!-- QUADRUPOD SHAPE -->
-            <transform id="quadrupodTranslation">
-                <matrixTransform id="quadrupodRotation">
+            <!-- quadruped SHAPE -->
+            <transform id="quadrupedTranslation">
+                <matrixTransform id="quadrupedRotation">
                     <transform translation='0 0 0' scale='1.0 1.0 1.0'>
                         <shape>
                             <appearance>
