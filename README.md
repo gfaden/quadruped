@@ -13,8 +13,12 @@ in the following ways:
 
   o It runs on any any PC or any iOS device
 
-  o It provides a 3D simulation which matches
-    the robot's actual movements. 
+  o It provides a 3D simulation which corresponds to
+    the robot's actual movements.
+
+  o It talks.
+
+  o The simulation is fun even if you don't have the robot.
 
 ## Installation on MacOS or Linux
 
@@ -43,6 +47,7 @@ Power on the quadrupod robot and join the WiFI SSID:
   `Freenove Quadrupod Robot`
 
 Run the following to start the Web Server:
+
   `node quad.js`
 
 On your browser, enter the following URL:
@@ -50,14 +55,14 @@ On your browser, enter the following URL:
 
 Use the red/green/blue cylinders to `Move` the robot in place.
 Use the red/blue rings to `Rotate` the robot in place.
-Use the grey USB button on the robot to `Reset` the robot.
+Use the image of the USB button on the robot image to `Reset` the robot position.
 
 The yellow buttons control the robot's crawling functions. While
 the robot is crawling the `Move` and `Rotate` controls are disabled.
 These controls are re-enabled by pressing the `Deactivate` button
 or the `Reset` button on the robot.
 
-## Installation on ios (iPhone/iPad)
+## Installation on iOS (iPhone/iPad)
 
 After installation, the application can also be run
 on iOS. First get `Touch Code Pro` from App Store.
@@ -68,11 +73,11 @@ Then the quadrupod directory must be copied to the iOS device.
 
 In left-hand panel click `+`
 
-select `Add FTP/SFTP/SVN`
+Select `Add FTP/SFTP/SVN`
 
 Enter local directory name (.e.g. quadrupod)
 
-Modify conf.keys file:
+Modify thr `conf.keys` file:
 
   line 3:  type sftp
 
@@ -83,15 +88,15 @@ Modify conf.keys file:
   line 6:  passwd xxxxxx
 
 
-Tap on `S` in circle icon to right of the directory entry.
+Tap on the `S` circle icon to the right of the directory entry.
 
-Select `Update` and wait for the spinning arrow to finish.
+Select `Update` and wait for the spinning arrow to complete.
 
-Tap on directory name to show its contents.
+Tap on the directory name to verify its contents.
 
 ## Running on iPad or iPhone
 
-Switch to the iOS `Settings` app and and join the WiFI SSID:
+Power on the robot, then switch to the iOS `Settings` app and join the WiFI SSID:
   `Freenove Quadrupod Robot`
 
 Switch back to `Touch Code Pro`
@@ -100,18 +105,17 @@ Tap on `quad.js`
 
 Tap on the 'play' icon to the right of the globe. It should become a square icon.
 
-Tap on the globe
+Tap on the globe.
 
 Enter the URL: localhost:4200
 
 If you don't see the app immediately, tap on `Done`, and then tap on the globe again.
 
-Use the red/green/blue cylinders to `Move` robot in place
+Use the red/green/blue cylinders to `Move` thr robot in place
 
-Use the red/blue rings to `Rotate` robot in place
+Use the red/blue rings to `Rotate` the robot in place
 
-Use the USB button on the robot to reset the position.
-
+Use the image of the USB button on the robot image to reset the position.
 
 Use one finger to change the viewing angle.
 
