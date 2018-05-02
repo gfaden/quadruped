@@ -12,6 +12,7 @@ options that are included in the robot kit. It is unique
 in the following ways:
 
   o It runs on any any PC or any iOS device
+
   o It provides a 3D simulation which matches
     the robot's actual movements. 
 
@@ -29,8 +30,11 @@ in the following ways:
   directory from quadrupod-local to ~/quadrupod.
 
   `npm install express`
+  <br>
   `npm install jquery`
+  <br>
   `npm install socket.io@1.7.4 --save`
+  <br>
   `npm install x3dom`
 
 ## Running on MacOS or Linux
@@ -63,16 +67,26 @@ https://itunes.apple.com/us/app/touch-code-pro/id989524904?mt=8
 Then the quadrupod directory must be copied to the iOS device.
 
 In left-hand panel click `+`
+
 select `Add FTP/SFTP/SVN`
-enter local directory name (.e.g. quadrupod)
+
+Enter local directory name (.e.g. quadrupod)
+
 Modify conf.keys file:
+
   line 3:  type sftp
+
   line 4:  path sftp://<IP address of your computer>//<path to quadrupod directory>
+
   line 5:  user <username>
+
   line 6:  passwd xxxxxx
 
+
 Tap on `S` in circle icon to right of the directory entry.
+
 Select `Update` and wait for the spinning arrow to finish.
+
 Tap on directory name to show its contents.
 
 ## Running on iPad or iPhone
@@ -83,24 +97,32 @@ Switch to the iOS `Settings` app and and join the WiFI SSID:
 Switch back to `Touch Code Pro`
 
 Tap on `quad.js`
+
 Tap on the 'play' icon to the right of the globe. It should become a square icon.
+
 Tap on the globe
+
 Enter the URL: localhost:4200
 
 If you don't see the app immediately, tap on `Done`, and then tap on the globe again.
 
 Use the red/green/blue cylinders to `Move` robot in place
+
 Use the red/blue rings to `Rotate` robot in place
+
 Use the USB button on the robot to reset the position.
 
-Use one finger to change the viewing angle
-Use two fingers to move, rotate or zoom the view
+
+Use one finger to change the viewing angle.
+
+Use two fingers to move, rotate or zoom the view.
 
 Use the yellow buttons for roaming.
 
 ## Author
 
    Glenn Faden
+   
    gtfaden@gmail.com
 
 ## License
