@@ -38,6 +38,7 @@ var rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
 var crawling = false;
 var rotating = false;
 var browser;
+var chunk = "";
 
 var robot = net.connect({
     host: '192.168.4.1',
@@ -45,27 +46,57 @@ var robot = net.connect({
 }, connected);
 
 function connected() {
-    // Activate
     console.log('robot connected');
-    robotWrite(72, false);
+
+    /*
+     * Uncomment the following robotWrite() call to enable tracking.
+     * When tracking is enabled the robot's leg movements
+     * will be animated in the 3D scene. An updated version of the
+     * Arduino robot sketch is required. See the README.md description
+     * further information.
+     */
+
+    //robotWrite(43, false);      // Uncomment to turn on tracking
+
+    robotWrite(72, false); // activate
 }
 
-robot.on('data', function(data) {
+robot.on('data', function (data) {
     if (data[1] === 23) {
         rotating = false;
         // crawling sequence completed
         if (crawling) {
             // repeat until deactivated
+            //console.log('still crawling');
             robot.write(crawlBuffer);
+        }
+    } else if (data[0] === 123) { // Left curly brace
+        chunk += data.toString(); // Add string on the end of the variable 'chunk'
+        d_index = chunk.indexOf(';'); // Find the delimiter
+
+        // While loop to keep going until no delimiter can be found
+        while (d_index > -1) {
+            try {
+                //onsole.log('chunk: ' + chunk);
+                string = chunk.substring(0, d_index); // Create string up until the delimiter
+                //console.log(string);
+                var legpos = JSON.parse(string);
+                if (browser !== undefined)
+                    browser.emit('mirror', legpos);
+            } catch (ex) {
+                console.log(ex);
+            }
+            chunk = chunk.substring(d_index + 1); // Cuts off the processed chunk
+            d_index = chunk.indexOf(';'); // Find the new delimiter
         }
     }
 });
 
-robot.on('end', function() {
+robot.on('end', function () {
     console.log('robot disconnected');
 });
 
-robot.on('error', function(err) {
+robot.on('error', function (err) {
     console.log('robot offline' + err);
 });
 
@@ -76,70 +107,70 @@ function robotWrite(command, state) {
         browser.emit('disable', crawling);
     crawlBuffer[1] = command;
     robot.write(crawlBuffer);
- }
+}
 
 app.use(express.static(__dirname + '/node_modules'));
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(client) {
+io.on('connection', function (client) {
     console.log('Client connected...');
     browser = client;
 
-    client.on('join', function(data) {
+    client.on('join', function (data) {
         console.log(data);
     });
 
-    client.on('Activate', function(data) {
+    client.on('Activate', function (data) {
         moveBuffer = new Buffer([128, 100, 64, 64, 64, 129]);
         rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
         robotWrite(72, false);
     });
 
-    client.on('Deactivate', function(data) {
+    client.on('Deactivate', function (data) {
         robotWrite(74, false);
     });
 
-    client.on('Forward', function(data) {
+    client.on('Forward', function (data) {
         robotWrite(64, true);
     });
 
-    client.on('Backward', function(data) {
+    client.on('Backward', function (data) {
         robotWrite(66, true);
     });
 
-    client.on('Left', function(data) {
+    client.on('Left', function (data) {
         robotWrite(68, true);
     });
 
-    client.on('Right', function(data) {
+    client.on('Right', function (data) {
         robotWrite(70, true);
     });
 
-    client.on('Rotate X', function(data) {
+    client.on('Rotate X', function (data) {
         rotateBuffer[2] = 64 + data;
         rotating = true;
         robot.write(rotateBuffer);
     });
 
-    client.on('Rotate Y', function(data) {
+    client.on('Rotate Y', function (data) {
         rotateBuffer[3] = 64 + data;
         rotating = true;
         robot.write(rotateBuffer);
     });
-    client.on('Move X', function(data) {
+    client.on('Move X', function (data) {
         moveBuffer[2] = 64 + data;
         rotating = true;
         robot.write(moveBuffer);
     });
 
-    client.on('Move Y', function(data) {
+    client.on('Move Y', function (data) {
         moveBuffer[3] = 64 + data;
         rotating = true;
         robot.write(moveBuffer);
     });
-    client.on('Move Z', function(data) {
+    client.on('Move Z', function (data) {
         moveBuffer[4] = 64 + data;
         rotating = true;
         robot.write(moveBuffer);
