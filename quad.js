@@ -38,6 +38,7 @@ var rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
 var crawling = false;
 var rotating = false;
 var browser;
+var robotConnected = false;
 var chunk = "";
 
 var robot = net.connect({
@@ -46,6 +47,7 @@ var robot = net.connect({
 }, connected);
 
 function connected() {
+    robotConnected = true;
     console.log('robot connected');
 
     /*
@@ -69,6 +71,9 @@ robot.on('data', function (data) {
             // repeat until deactivated
             //console.log('still crawling');
             robot.write(crawlBuffer);
+        } else {
+            if (browser !== undefined)
+                browser.emit('disable', crawling);
         }
     } else if (data[0] === 123) { // Left curly brace
         chunk += data.toString(); // Add string on the end of the variable 'chunk'
@@ -103,8 +108,11 @@ robot.on('error', function (err) {
 
 function robotWrite(command, state) {
     crawling = state;
-    if (browser !== undefined)
-        browser.emit('disable', crawling);
+    if (browser != undefined) {
+       if (crawling || !robotConnected) {
+             browser.emit('disable', crawling);
+       }
+    }
     crawlBuffer[1] = command;
     robot.write(crawlBuffer);
 }
@@ -115,7 +123,7 @@ app.get('/', function (req, res, next) {
 });
 
 io.on('connection', function (client) {
-    console.log('Client connected...');
+    console.log('browser connected...');
     browser = client;
 
     client.on('join', function (data) {
