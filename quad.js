@@ -36,7 +36,6 @@ var crawlBuffer = new Buffer([128, 72, 129]);
 var moveBuffer = new Buffer([128, 100, 64, 64, 64, 129]);
 var rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
 var crawling = false;
-var rotating = false;
 var browser;
 var robotConnected = false;
 var chunk = "";
@@ -65,7 +64,6 @@ function connected() {
 
 robot.on('data', function (data) {
     if (data[1] === 23) {
-        rotating = false;
         // crawling sequence completed
         if (crawling) {
             // repeat until deactivated
@@ -109,12 +107,14 @@ robot.on('error', function (err) {
 function robotWrite(command, state) {
     crawling = state;
     if (browser != undefined) {
-       if (crawling || !robotConnected) {
-             browser.emit('disable', crawling);
-       }
+        if (crawling || !robotConnected) {
+            browser.emit('disable', crawling);
+        }
     }
-    crawlBuffer[1] = command;
-    robot.write(crawlBuffer);
+    if (robotConnected) {
+        crawlBuffer[1] = command;
+        robot.write(crawlBuffer);
+    }
 }
 
 app.use(express.static(__dirname + '/node_modules'));
@@ -157,31 +157,36 @@ io.on('connection', function (client) {
     });
 
     client.on('Rotate X', function (data) {
-        rotateBuffer[2] = 64 + data;
-        rotating = true;
-        robot.write(rotateBuffer);
+        if (robotConnected) {
+            rotateBuffer[2] = 64 + data;
+            robot.write(rotateBuffer);
+        }
     });
 
     client.on('Rotate Y', function (data) {
-        rotateBuffer[3] = 64 + data;
-        rotating = true;
-        robot.write(rotateBuffer);
+        if (robotConnected) {
+            rotateBuffer[3] = 64 + data;
+            robot.write(rotateBuffer);
+        }
     });
     client.on('Move X', function (data) {
-        moveBuffer[2] = 64 + data;
-        rotating = true;
-        robot.write(moveBuffer);
+        if (robotConnected) {
+            moveBuffer[2] = 64 + data;
+            robot.write(moveBuffer);
+        }
     });
 
     client.on('Move Y', function (data) {
-        moveBuffer[3] = 64 + data;
-        rotating = true;
-        robot.write(moveBuffer);
+        if (robotConnected) {
+            moveBuffer[3] = 64 + data;
+            robot.write(moveBuffer);
+        }
     });
     client.on('Move Z', function (data) {
-        moveBuffer[4] = 64 + data;
-        rotating = true;
-        robot.write(moveBuffer);
+        if (robotConnected) {
+            moveBuffer[4] = 64 + data;
+            robot.write(moveBuffer);
+        }
     });
 });
 
