@@ -26,7 +26,7 @@ This 3D Remote Control application can display a synchronized
 representation of the robot's crawling and turning movements.
 The feature depends on a modification of the Freenove Qadruped Robot
 software. The modified version is backward compatible and is 
-available at https://github.com/gfaden/Freenove_Quadruped_Robot_Kit/tree
+available at https://github.com/gfaden/Freenove_Quadruped_Robot_Kit
 
 
 ## Installation on MacOS or Linux
