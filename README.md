@@ -23,10 +23,10 @@ in the following ways:
 ## Upgrading the Arduino Freenove Quadruped Robot software
 
 This 3D Remote Control application can display a synchronized
-representation of the robot's crawling and turning movments.
+representation of the robot's crawling and turning movements.
 The feature depends on a modification of the Freenove Qadruped Robot
 software. The modified version is backward compatible and is 
-available at https://github.com/gfaden/quadruped
+available at https://github.com/gfaden/Freenove_Quadruped_Robot_Kit/tree/master/Arduino/Libraries
 
 
 ## Installation on MacOS or Linux
