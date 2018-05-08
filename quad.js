@@ -49,14 +49,14 @@ function connected() {
     console.log('robot connected');
 
     /*
-     * Uncomment the following robotWrite() call to enable tracking.
+     * The following robotWrite() call enables robot tracking.
      * When tracking is enabled the robot's leg movements
-     * will be animated in the 3D scene. An updated version of the
+     * are animated in the 3D scene. An updated version of the
      * Arduino robot sketch is required. See the README.md description
      * further information.
      */
 
-    //robotWrite(43, false);      // Uncomment to turn on tracking
+    robotWrite(43, false); // Enable robot tracking
 
     robotWrite(72, false); // activate
 }
