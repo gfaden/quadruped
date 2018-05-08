@@ -63,14 +63,20 @@
                 'line3'
             ];
 
+            if (!data && crawling) {
+                resetPos();
+                crawling = false;
+            } else if (data && !crawling) {
+                crawling = true;
+            } else {
+                return;
+            }
             for (var i = 0; i < 5; i++) {
                 document.getElementById(sensors[i]).setAttribute('enabled', !data);
             }
             for (var i = 0; i < 18; i++) {
                 document.getElementById(elements[i]).setAttribute('transparency', data ? 1 : 0);
             }
-            if (!data)
-                applyRotationGizmoTransformations("");
         });
 
         socket.on('mirror', function (legpos) {
@@ -84,6 +90,7 @@
         });
 
         var mode = 'Move';
+        var crawling = false;
         var transformMatrix;
         var currentGizmoRotation = new x3dom.fields.SFMatrix4f();
         var currentGizmoRotationOffset = new x3dom.fields.SFMatrix4f();
