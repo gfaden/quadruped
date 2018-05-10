@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html style='width:100%; height:100%; border:0; margin:0; padding:0;'>
 
-<body style='height:100%; background: linear-gradient(Grey 0%, White 100%);'>
+<body style='height:95%; background: linear-gradient(Grey 0%, White 100%);'>
 
     <script src="/jquery/dist/jquery.min.js"></script>
     <script src="/x3dom/x3dom.js"></script>
@@ -67,6 +67,7 @@
                 resetPos();
                 crawling = false;
             } else if (data && !crawling) {
+                resetCoords();
                 crawling = true;
             } else {
                 return;
@@ -79,9 +80,57 @@
             }
         });
 
+        /*
+         * This function mirrors the robot's movements while crawling. The
+         * turning angles and crawling distances are just approximations
+         * since the robot only sends the coordinates of its feet.
+         */
         socket.on('mirror', function (legpos) {
             for (var leg in legpos) {
-                updateLeg(leg, legA[leg], legpos[leg]);
+                var sensorToWorldMatrix, translationValue, rotationMatrixWorld;
+
+                if (crawlMode === 'Forward' || crawlMode === 'Backward') {
+                    var axisRotation = '1 0 0 -1.57';
+                    var distance = new x3dom.fields.SFVec3f(0, 0, 0);
+                    if (crawlMode === 'Forward')
+                        xoffset += .025;
+                    else
+                        xoffset -= .025;
+                    distance.x = xoffset;
+                    distance = transformMatrix.inverse().multMatrixVec(distance);
+
+                    //convert the sensor's output from sensor coordinates to world coordinates
+                    sensorToWorldMatrix = x3dom.fields.SFMatrix4f.parseRotation(axisRotation);
+                    translationValue = sensorToWorldMatrix.multMatrixVec(distance);
+
+                    //transform the affected element
+                    document.getElementById('quadrupedTranslation').setFieldValue('translation',
+                        translationValue);
+                    updateLeg(leg, legA[leg], legpos[leg]);
+                }
+                if (crawlMode === 'Left' || crawlMode === 'Right') {
+                    var axisRotation = '0 1 0 -1.57';
+                    var robotRotation = new x3dom.fields.Quaternion(0, 0.001, 0, 0.995);
+
+                    if (crawlMode === 'Right')
+                        robotRotation.y = -robotRotation.y;
+
+                    sensorToWorldMatrix = x3dom.fields.SFMatrix4f.parseRotation(axisRotation);
+                    rotationMatrixWorld = sensorToWorldMatrix.mult(robotRotation.toMatrix());
+
+                    //create an offset that applies the current rotation in world coordinates,
+                    //but doesn't change the orientation of the coordinate system
+                    currentGizmoRotationOffset = rotationMatrixWorld.mult(sensorToWorldMatrix.inverse());
+                    transformMatrix = currentGizmoRotationOffset.mult(currentGizmoRotation);
+
+                    //incorporate the current rotation offset, interpreted globally, into the stored rotation value
+                    //set matrix value in column major format, as required by the MatrixTransform node
+
+                    var quadrupedRotationNode = document.getElementById('quadrupedRotation');
+                    quadrupedRotationNode.setFieldValue("matrix", transformMatrix.transpose());
+                    currentGizmoRotation = transformMatrix;
+                    updateLeg(leg, legA[leg], legpos[leg]);
+                }
             }
         });
 
@@ -91,6 +140,7 @@
 
         var mode = 'Move';
         var crawling = false;
+        var crawlMode;
         var transformMatrix;
         var currentGizmoRotation = new x3dom.fields.SFMatrix4f();
         var currentGizmoRotationOffset = new x3dom.fields.SFMatrix4f();
@@ -181,12 +231,12 @@
             });
 
             $("button").click(function (event) {
-                var myAudio = document.getElementById("audio" + $(this).val());
-                socket.emit($(this).val(), "test");
+                crawlMode = $(this).val();
+                var myAudio = document.getElementById("audio" + crawlMode);
+                socket.emit(crawlMode, "test");
                 myAudio.play();
             });
         });
-
 
         function addLeg(leg, lega, legb, legc) {
             var legColor;
@@ -271,8 +321,13 @@
             updateLeg('leg3', leg3a, leg3pos);
             updateLeg('leg4', leg4a, leg4pos);
         }
-
         function resetPos() {
+            resetCoords();
+            socket.emit('Activate', 'test');
+            
+        }
+
+        function resetCoords() {
             var translationValue = document.getElementById('XtranslationHandleTransform').getFieldValue('translation');
 
             // reset all the  elements
@@ -288,7 +343,6 @@
             currentGizmoRotation = new x3dom.fields.SFMatrix4f();
             currentGizmoRotationOffset = new x3dom.fields.SFMatrix4f();
             applyRotationGizmoTransformations("");
-            socket.emit('Activate', 'test');
         }
 
         function handleSlider(color, axisRotation, value) {
@@ -501,7 +555,7 @@
         }
     </script>
 
-    <div align='center' style='height:20%; width:100%'>
+    <div align='center' style='position: relative;'>
         <style>
             h1 {
                 color: #e6b800;
@@ -546,10 +600,11 @@
         </div>
     </div>
 
-    <x3d id='x3dElement' showStat='false' showLog='false' style='width:100%; height:80%; border:0'>
+    <x3d id='x3dElement' showStat='false' showLog='false'
+        style='position:absolute; top: 240px; width: 100%; bottom: 0; border:0'>
         <scene DEF='scene'>
             <navigationInfo type='examine'></navigationInfo>
-            <viewpoint id='view' position="13.71854 12.00018 18.01263" orientation="-0.66475 0.73173 0.25059  0.81072"></viewpoint>
+            <viewpoint position="13.71854 12.00018 18.01263" orientation="-0.66475 0.73173 0.25059 0.81072"></viewpoint>
 
             <!-- quadruped SHAPE -->
             <transform id="quadrupedTranslation">

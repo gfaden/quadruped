@@ -35,6 +35,7 @@ var net = require('net');
 var crawlBuffer = new Buffer([128, 72, 129]);
 var moveBuffer = new Buffer([128, 100, 64, 64, 64, 129]);
 var rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
+var trackingBuffer = new Buffer([128, 43, 129]);
 var crawling = false;
 var browser;
 var robotConnected = false;
@@ -57,8 +58,7 @@ function connected() {
      * further information.
      */
 
-    robotWrite(43, false); // Enable robot tracking
-
+    robot.write(trackingBuffer); // Enable robot tracking
     robotWrite(72, false); // activate
 }
 
@@ -67,11 +67,12 @@ robot.on('data', function (data) {
         // crawling sequence completed
         if (crawling) {
             // repeat until deactivated
-            //console.log('still crawling');
+            robot.write(trackingBuffer);
             robot.write(crawlBuffer);
         } else {
-            if (browser !== undefined)
+            if (browser !== undefined) {
                 browser.emit('disable', crawling);
+            }
         }
     } else if (data[0] === 123) { // Left curly brace
         chunk += data.toString(); // Add string on the end of the variable 'chunk'
@@ -100,12 +101,12 @@ robot.on('end', function () {
 });
 
 robot.on('error', function (err) {
-    console.log('robot offline' + err);
+    console.log('robot offline ' +  err);
 });
-
 
 function robotWrite(command, state) {
     crawling = state;
+
     if (browser != undefined) {
         if (crawling || !robotConnected) {
             browser.emit('disable', crawling);
