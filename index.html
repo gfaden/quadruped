@@ -87,30 +87,26 @@
          */
         socket.on('mirror', function (legpos) {
             for (var leg in legpos) {
-                var sensorToWorldMatrix, translationValue, rotationMatrixWorld;
-
                 if (crawlMode === 'Forward' || crawlMode === 'Backward') {
-                    var axisRotation = '1 0 0 -1.57';
-                    var distance = new x3dom.fields.SFVec3f(0, 0, 0);
-                    if (crawlMode === 'Forward')
-                        xoffset += .025;
-                    else
-                        xoffset -= .025;
-                    distance.x = xoffset;
+                    var distance = new x3dom.fields.SFVec3f(0.02, 0, 0);
+
                     distance = transformMatrix.inverse().multMatrixVec(distance);
-
-                    //convert the sensor's output from sensor coordinates to world coordinates
-                    sensorToWorldMatrix = x3dom.fields.SFMatrix4f.parseRotation(axisRotation);
-                    translationValue = sensorToWorldMatrix.multMatrixVec(distance);
-
-                    //transform the affected element
-                    document.getElementById('quadrupedTranslation').setFieldValue('translation',
-                        translationValue);
+                    if (crawlMode === 'Forward') {
+                        xoffset += distance.x;
+                        zoffset -= distance.z;
+                    } else {
+                        xoffset -= distance.x;
+                        zoffset += distance.z;
+                    }
+                    distance.x = xoffset;
+                    distance.z = zoffset;
+                    document.getElementById('quadrupedTranslation').setFieldValue('translation', distance);
                     updateLeg(leg, legA[leg], legpos[leg]);
                 }
                 if (crawlMode === 'Left' || crawlMode === 'Right') {
+                    var sensorToWorldMatrix, rotationMatrixWorld;
                     var axisRotation = '0 1 0 -1.57';
-                    var robotRotation = new x3dom.fields.Quaternion(0, 0.001, 0, 0.995);
+                    var robotRotation = new x3dom.fields.Quaternion(0, 0.00095, 0, 0.995);
 
                     if (crawlMode === 'Right')
                         robotRotation.y = -robotRotation.y;
@@ -321,10 +317,10 @@
             updateLeg('leg3', leg3a, leg3pos);
             updateLeg('leg4', leg4a, leg4pos);
         }
+
         function resetPos() {
             resetCoords();
             socket.emit('Activate', 'test');
-            
         }
 
         function resetCoords() {
@@ -556,14 +552,6 @@
     </script>
 
     <div align='center' style='position: relative;'>
-        <style>
-            h1 {
-                color: #e6b800;
-                font-size: 3em;
-            }
-        </style>
-        <h1>Freenove quadruped Robot</h1>
-
         <div>
             <button id='activate' value='Activate'>Activate</button>
             <button id='forward' value='Forward'>Forward</button>
@@ -600,8 +588,7 @@
         </div>
     </div>
 
-    <x3d id='x3dElement' showStat='false' showLog='false'
-        style='position:absolute; top: 240px; width: 100%; bottom: 0; border:0'>
+    <x3d id='x3dElement' showStat='false' showLog='false' style='position:absolute; top: 130px; width: 100%; bottom: 0; border:0'>
         <scene DEF='scene'>
             <navigationInfo type='examine'></navigationInfo>
             <viewpoint position="13.71854 12.00018 18.01263" orientation="-0.66475 0.73173 0.25059 0.81072"></viewpoint>
@@ -632,6 +619,17 @@
             </transform>
 
             <!-- AXES FOR BETTER ORIENTATION -->
+
+            <transform translation='-0 -8  -0 ' rotation='1 0 0 -1.57'>
+                <shape>
+                    <appearance>
+                        <material diffuseColor='0.1 0.1 0.1'></material>
+                    </appearance>
+                    <text string='Freenove Quadruped Robot' solid='false'>
+                        <fontstyle family="'Times' 'Orbitron'" size="1.0"></fontstyle>
+                    </text>
+                </shape>
+            </transform>
 
             <transform translation='-6 -1.1 -6 ' rotation='0 1 0 1.57'>
                 <shape>
