@@ -1,7 +1,7 @@
 
-# Freenove quadruped Robot Remote Control
+# Freenove Quadruped Robot Remote Control
 
-This application controls the Freenove Qaudrupod Robot.
+This application controls the Freenove Quadruped Robot.
 http://www.freenove.com
 The User Interface is based on x3dom:
 https://www.x3dom.org, and extends the Interactive 3D 
@@ -24,7 +24,7 @@ in the following ways:
 
 This 3D Remote Control application can display a synchronized
 representation of the robot's crawling and turning movements.
-The feature depends on a modification of the Freenove Qadruped Robot
+The feature depends on a modification of the Freenove Quadruped Robot
 software. The modified version is backward compatible and is 
 available at https://github.com/gfaden/Freenove_Quadruped_Robot_Kit
 
@@ -73,7 +73,7 @@ or the `Reset` button on the robot.
 
 ## Installation on iOS (iPhone/iPad)
 
-A version of this application is now availale from the Apple App Store. See:
+A version of this application is now available from the Apple App Store. See:
 
 https://itunes.apple.com/us/app/quadruped3d/id1386509240?mt=8&ign-mpt=uo%3D4
 
