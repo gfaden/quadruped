@@ -11,7 +11,7 @@ This application is an alternative to the remote control
 options that are included in the robot kit. It is unique
 in the following ways:
 
-  o It runs on any any PC or any iOS device
+  o It runs on any PC or iOS device.
 
   o It provides a 3D simulation which corresponds to
     the robot's actual movements.
@@ -73,64 +73,10 @@ or the `Reset` button on the robot.
 
 ## Installation on iOS (iPhone/iPad)
 
-After installation, the application can also be run
-on iOS. First get `Touch Code Pro` from App Store.
+A version of this application is now availale from the Apple App Store. See:
 
-https://itunes.apple.com/us/app/touch-code-pro/id989524904?mt=8
+https://itunes.apple.com/us/app/quadruped3d/id1386509240?mt=8&ign-mpt=uo%3D4
 
-Then the quadruped directory must be copied to the iOS device.
-
-In left-hand panel click `+`
-
-Select `Add FTP/SFTP/SVN`
-
-Enter local directory name (.e.g. quadruped)
-
-Modify thr `conf.keys` file:
-
-  line 3:  type sftp
-
-  line 4:  path sftp:\/\/\<IP address of your computer\>\/\/\<path to quadruped directory\>
-
-  line 5:  user <username>
-
-  line 6:  passwd xxxxxx
-
-
-Tap on the `S` circle icon to the right of the directory entry.
-
-Select `Update` and wait for the spinning arrow to complete.
-
-Tap on the directory name to verify its contents.
-
-## Running on iPad or iPhone
-
-Power on the robot, then switch to the iOS `Settings` app and join the WiFI SSID:
-  `Freenove quadruped Robot`
-
-Switch back to `Touch Code Pro`
-
-Tap on `quad.js`
-
-Tap on the 'play' icon to the right of the globe. It should become a square icon.
-
-Tap on the globe.
-
-Enter the URL: localhost:4200
-
-If you don't see the app immediately, tap on `Done`, and then tap on the globe again.
-
-Use the red/green/blue cylinders to `Move` thr robot in place
-
-Use the red/blue rings to `Rotate` the robot in place
-
-Use the image of the USB button on the robot image to reset the position.
-
-Use one finger to change the viewing angle.
-
-Use two fingers to move, rotate or zoom the view.
-
-Use the yellow buttons for roaming.
 
 ## License
 
