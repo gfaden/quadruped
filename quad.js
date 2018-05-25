@@ -31,6 +31,14 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var net = require('net');
+var forSteps = require('./forwardSteps');
+var forwardSteps = forSteps.forwardSteps;
+var backSteps = require('./backwardSteps');
+var backwardSteps = backSteps.backwardSteps;
+var ltSteps = require('./leftSteps');
+var leftSteps = ltSteps.leftSteps;
+var rtSteps = require('./rightSteps');
+var rightSteps = rtSteps.rightSteps;
 
 var crawlBuffer = new Buffer([128, 72, 129]);
 var moveBuffer = new Buffer([128, 100, 64, 64, 64, 129]);
@@ -40,11 +48,15 @@ var crawling = false;
 var browser;
 var robotConnected = false;
 var chunk = "";
+var stepCount = 0;
+var stepTimeout = 0;
+var stepsArray = backwardSteps;
 
 var robot = net.connect({
     host: '192.168.4.1',
     port: 65535
 }, connected);
+
 
 function connected() {
     robotConnected = true;
@@ -70,6 +82,7 @@ robot.on('data', function (data) {
             robot.write(trackingBuffer);
             robot.write(crawlBuffer);
         } else {
+
             if (browser !== undefined) {
                 browser.emit('disable', crawling);
             }
@@ -77,16 +90,14 @@ robot.on('data', function (data) {
     } else if (data[0] === 123) { // Left curly brace
         chunk += data.toString(); // Add string on the end of the variable 'chunk'
         d_index = chunk.indexOf(';'); // Find the delimiter
-
         // While loop to keep going until no delimiter can be found
         while (d_index > -1) {
             try {
-                //onsole.log('chunk: ' + chunk);
                 string = chunk.substring(0, d_index); // Create string up until the delimiter
-                //console.log(string);
                 var legpos = JSON.parse(string);
                 if (browser !== undefined)
                     browser.emit('mirror', legpos);
+
             } catch (ex) {
                 console.log(ex);
             }
@@ -101,8 +112,34 @@ robot.on('end', function () {
 });
 
 robot.on('error', function (err) {
-    console.log('robot offline ' +  err);
+    console.log('robot offline ' + err);
 });
+
+
+function nextStep() {
+    if (crawling) {
+        var delay = stepsArray[stepCount].delay;
+        var legpos = stepsArray[stepCount].pos;
+        if (browser !== undefined)
+            browser.emit('mirror', legpos);
+        stepCount++;
+        if (stepCount === stepsArray.length)
+            stepCount = 0;
+        stepTimeout = setTimeout(nextStep, delay);
+    }
+}
+
+function crawlOffline(command) {
+    if (!crawling) {
+        if (browser !== undefined) {
+            browser.emit('disable', crawling);
+        }
+    } else {
+        stepCount = 0;
+        clearTimeout(stepTimeout);
+        nextStep();
+    }
+}
 
 function robotWrite(command, state) {
     crawling = state;
@@ -115,6 +152,8 @@ function robotWrite(command, state) {
     if (robotConnected) {
         crawlBuffer[1] = command;
         robot.write(crawlBuffer);
+    } else {
+        crawlOffline(command);
     }
 }
 
@@ -131,29 +170,30 @@ io.on('connection', function (client) {
         console.log(data);
     });
 
-    client.on('Activate', function (data) {
+    client.on('Stretch', function (data) {
         moveBuffer = new Buffer([128, 100, 64, 64, 64, 129]);
         rotateBuffer = new Buffer([128, 102, 64, 64, 128]);
         robotWrite(72, false);
     });
 
-    client.on('Deactivate', function (data) {
-        robotWrite(74, false);
-    });
 
     client.on('Forward', function (data) {
+        stepsArray = forwardSteps;
         robotWrite(64, true);
     });
 
     client.on('Backward', function (data) {
+        stepsArray = backwardSteps;
         robotWrite(66, true);
     });
 
     client.on('Left', function (data) {
+        stepsArray = leftSteps;
         robotWrite(68, true);
     });
 
     client.on('Right', function (data) {
+        stepsArray = rightSteps;
         robotWrite(70, true);
     });
 

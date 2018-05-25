@@ -8,6 +8,7 @@
     <script src="/socket.io-client/dist/socket.io.min.js"></script>
     <script src="/touch/x3domTouch.js"></script>
     <link rel='stylesheet' type='text/css' href='/x3dom/x3dom.css' />
+    <link rel='stylesheet' type='text/css' href='/img/index.css' />
 
     <style>
         #inputTypeLabel {
@@ -217,22 +218,106 @@
             addLeg('leg3', leg3a, leg3b, leg3c);
             addLeg('leg4', leg4a, leg4b, leg4c);
 
-            $("button").css({
-                'width': '30%',
-                'height': '50px',
-                'font-size': '2em',
-                'background-color': '#e6b800',
-                'color': 'black',
-                'margin': '5px'
-            });
+            document.getElementById('resetBox').addEventListener('click', resetPos);
 
-            $("button").click(function (event) {
-                crawlMode = $(this).val();
-                var myAudio = document.getElementById("audio" + crawlMode);
-                socket.emit(crawlMode, "test");
-                myAudio.play();
+            $('.btn-group').RadioButton({
+                onSelect: function (e, rbObj) {}
             });
         });
+
+        (function ($, window, document) {
+            var RadioButton = function (element, options) {
+                this.options = $.extend({}, $.fn.RadioButton.defaults, options);
+                var _self = this,
+                radioButtons = $('input:radio', element);
+
+                _self.widgetElem = element;
+                _self.selected = undefined;
+                $(element).addClass('clearfix');
+
+                radioButtons.each(function () {
+                    var className = $(this).data('button-class') || "",
+                    title = $(this).data('button-title') || "",
+                    caption = $(this).data('button-caption') || "",
+                    icon = $(this).data('button-icon') || "",
+                    button;
+
+                    _self.selected = $(this).is(':checked') ? this : _self.selected;
+
+                    $(this).wrap($('<div>', {
+                    'class': 'btn ' + className,
+                        title: title
+                    }));
+
+                    button = $(this).parent();
+
+                    if (icon) {
+                        $(button).append('<img id="' + caption + '_off" src="' + icon + '_off.png" />');
+                        $(button).append('<img id="' + caption + '_on" hidden src="' + icon + '_on.png" />');
+                    }
+                    if (caption) {
+                        $(button).append('<span class="caption">' + caption + '</span>');
+                    }
+                    button.bind('click', {
+                        _self: _self
+                    }, _self.toggle);
+                });
+                $(_self.selected).trigger('click');
+            };
+
+            RadioButton.prototype.toggle = function (e) {
+                var _self = e.data._self,
+                    button = $(this),
+                    radio = button.find('input:radio'),
+                    parent = button.parent('[data-toggle="buttons-radio"]');
+
+                if (parent) {
+                    var buttonPrevious = parent.find('.active');
+                    var div = buttonPrevious[0];
+                    if (div !== undefined) {
+                        $('#' + div.textContent + '_on').hide();
+                        $('#' + div.textContent + '_off').show();
+                    }
+                    buttonPrevious.removeClass('active');
+                }
+
+                button.toggleClass('active').find('input:radio').attr('checked', 'checked');
+                _self.selected = radio.is(':checked') ? radio : _self.selected;
+
+                crawlMode = this.textContent;
+                $('#' + crawlMode + '_off').hide();
+                $('#' + crawlMode + '_on').show();
+
+                if (crawlMode !== 'Stretch') {
+                    var myAudio = document.getElementById('audio' + crawlMode);
+                    myAudio.play();
+                }
+                socket.emit(crawlMode, "test");
+            };
+
+            RadioButton.prototype.getSelected = function () {
+                return this.selected;
+            };
+
+            RadioButton.prototype.getValue = function () {
+                return $(this.selected).val();
+            };
+
+            /* PLUGIN DEFINITION */
+            $.fn.RadioButton = function (option) {
+                return this.each(function () {
+                    $(this).data("radio-button-obj", new RadioButton(this, option));
+                });
+            };
+
+            $.fn.RadioButton.defaults = {};
+            $.fn.RadioButton.Constructor = RadioButton;
+
+            $.fn.getRadioButton = function () {
+                return $(this).data('radio-button-obj');
+            };
+
+        })(window.jQuery, window, document);
 
         function addLeg(leg, lega, legb, legc) {
             var legColor;
@@ -264,6 +349,18 @@
                 $('#quadrupedRotation').append(gobj);
             }
         }
+
+        var simulateStetch = function () {
+            // Create our event (with options)
+            var evt = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            var elem = document.getElementById('stretch');
+        // If cancelled, don't dispatch our event
+            var canceled = !elem.dispatchEvent(evt);
+        };
 
         function checkLeg(leg, p1, p2) {
             var xspan = (p1.x - p2.x);
@@ -320,7 +417,7 @@
 
         function resetPos() {
             resetCoords();
-            socket.emit('Activate', 'test');
+            socket.emit('Stretch', 'test');
         }
 
         function resetCoords() {
@@ -552,11 +649,16 @@
     </script>
 
     <div align='center' style='position: relative;'>
-        <div>
-            <button id='activate' value='Activate'>Activate</button>
-            <button id='forward' value='Forward'>Forward</button>
-            <button id='deactivate' value='Deactivate'>Deactivate</button>
+
+    <!-- Add data-toggle="buttons-radio" for radio style toggling on btn-group -->
+        <div style='padding-left:9px; margin-top:40px; position: relative;' class="btn-group" data-toggle="buttons-radio">
+            <input type="radio" id="stretch" value="Stretch" data-button-icon="img/stretch"  data-button-title="Stretch" data-button-caption="Stretch" checked>
+            <input type="radio" value="Forward"  data-button-icon="img/forward" data-button-title="Forward" data-button-caption="Forward">
+            <input type="radio" value="Backward" data-button-icon="img/backward" data-button-title="Backward" data-button-caption="Backward" >
+            <input type="radio" value="Left" data-button-icon="img/left" data-button-title="Left" data-button-caption="Left">
+            <input type="radio" value="Right" data-button-icon="img/right" data-button-title="Right" data-button-caption="Right" >
         </div>
+    
         <audio id="audioForward">
             <source src="/voice/forward.m4a" type="audio/mpeg" />
         </audio>
@@ -569,23 +671,12 @@
         <audio id="audioRight">
             <source src="/voice/right.m4a" type="audio/mpeg" />
         </audio>
-        <audio id="audioActivate">
-            <source src="/voice/activate.m4a" type="audio/mpeg" />
-        </audio>
-        <audio id="audioDeactivate">
-            <source src="/voice/deactivate.m4a" type="audio/mpeg" />
-        </audio>
         <audio id="audioMove">
             <source src="/voice/move.m4a" type="audio/mpeg" />
         </audio>
         <audio id="audioRotate">
             <source src="/voice/rotate.m4a" type="audio/mpeg" />
         </audio>
-        <div>
-            <button id='left' value='Left'>Left</button>
-            <button id='backward' value='Backward'>Backward</button>
-            <button id='right' value='Right'>Right</button>
-        </div>
     </div>
 
     <x3d id='x3dElement' showStat='false' showLog='false' style='position:absolute; top: 130px; width: 100%; bottom: 0; border:0'>
@@ -601,7 +692,7 @@
                             <appearance>
                                 <material diffuseColor='1.0 0.75 0.0'></material>
                                 <CommonSurfaceShader diffuseFacor='1 1 1' shininessFactor='.5'>
-                                    <ImageTexture containerField='diffuseTexture' url='/texture/marble.jpg'></ImageTexture>
+                                    <ImageTexture containerField='diffuseTexture' url='/img/marble.jpg'></ImageTexture>
                                 </CommonSurfaceShader>
                             </appearance>
                             <Box size='4 2 4'></Box>
@@ -612,7 +703,7 @@
                             <appearance>
                                 <material diffuseColor='.4 0.4 0.6'></material>
                             </appearance>
-                            <Box size='.5 .5 .5' onclick='resetPos(event)'></Box>
+                            <Box size='.5 .5 .5'></Box>
                         </shape>
                     </transform>
                 </matrixTransform>
